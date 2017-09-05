@@ -23,6 +23,11 @@ public class NeuralNet {
     private Matrix inputData;
     private Matrix targetData;
 
+    private Matrix z2;
+    private Matrix z3;
+    private Matrix yhat;
+    private Matrix a2;
+
      NeuralNet(){
          if(!testMode){
              setHyperParameters();
@@ -41,6 +46,7 @@ public class NeuralNet {
          error.print(1, 3);
          System.out.println("Target Data: ");
          targetData.print(1, 3);
+         backPropagate(yhat);
     }
 
     private Matrix forward(){
@@ -56,19 +62,19 @@ public class NeuralNet {
             m.print(1, 5);
         }
 
-        Matrix z2 = new Matrix(inputData.times(weights.get(0)).getArray());
+        z2 = new Matrix(inputData.times(weights.get(0)).getArray());
         System.out.println("z2");
         z2.print(1, 5);
 
-        Matrix a2 = activationFunction.apply(z2);
+        a2 = activationFunction.apply(z2);
         System.out.println("a2");
         a2.print(1, 5);
 
-        Matrix z3 = new Matrix(a2.times(weights.get(1)).getArray());
+        z3 = new Matrix(a2.times(weights.get(1)).getArray());
         System.out.println("z3");
         z3.print(1, 5);
 
-        Matrix yhat = activationFunction.apply(z3);
+        yhat = activationFunction.apply(z3);
         System.out.println("Forward Propagation results :");
         yhat.print(1, 5);
 
@@ -77,12 +83,24 @@ public class NeuralNet {
 
     private Matrix backPropagate(Matrix estimated){
 
+        System.out.println("Beggining Backpropagation: ");
+
+        //dJdW2
+        Matrix m = targetData.minus(estimated).times(-1);
+        Matrix delta3 = m.arrayTimes(activationFunction.applyGradFunc(z3));
+        Matrix dJdW2 = a2.transpose().times(delta3);
+
+        //dJdW1
+        Matrix j = delta3.times(weights.get(1).transpose()); j.print(1, 3);
+        Matrix delta2 = activationFunction.applyGradFunc(z2).arrayTimes(j); delta2.print(1, 3);
+        Matrix dJdW1 = inputData.transpose().times(delta2);
 
 
+        System.out.println("Computing Costs :");
+        dJdW2.print(1, 3);
+        dJdW1.print(1, 3);
 
-
-
-
+        return null;
     }
 
     private void generateTrainingMatrices(){
