@@ -1,13 +1,16 @@
 import Jama.Matrix;
 
 /**
- * Sygmoid activation function
+ * Created by fabd on 5/09/17.
  */
-  public class Sygmoid implements ActivationFunction {
+public class HyperbolicTangent extends ActivationFunction {
+
 
     @Override
-    public double apply(double z) {
-        return (1/(1 + Math.exp(-z)));
+    public double apply(double input) {
+       double x = input*(2d/3d);
+       x = 1.7159*Math.tanh(x) + momentumTerm*x;
+       return x;
     }
 
     @Override
@@ -25,7 +28,9 @@ import Jama.Matrix;
 
     @Override
     public double applyGradFunc(double input) {
-        return apply(input)*(1-apply(input));
+
+        return ((1- (Math.pow(Math.exp(input) - Math.exp(-input), 2))/
+                    Math.pow(Math.exp(input) + Math.exp(-input), 2)));
     }
 
     @Override
@@ -35,9 +40,9 @@ import Jama.Matrix;
         for (int i = 0; i < input.getRowDimension(); i++) {
             for (int j = 0; j < input.getColumnDimension(); j++) {
 
-                out.set(i, j, 1 - apply(input.get(i,j)));
+                out.set(i, j, applyGradFunc(input.get(i,j)));
             }
         }
-       return out;
+        return out;
     }
 }

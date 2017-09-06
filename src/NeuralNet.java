@@ -1,23 +1,24 @@
 import Jama.Matrix;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
- * Created by fabd on 10/08/17.
+ * Base Neural Net class for project Wyvern.
  */
 
 
+@SuppressWarnings({"FieldCanBeLocal", "WeakerAccess", "JavaDoc"})
 public class NeuralNet {
-    private boolean testMode = true;
     private static final double[][] trainingIn =  {{3, 5}, {5, 1}, {10, 2}};
     private static final double[]   trainingOut = {75, 82, 93};
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private ArrayList<Matrix> initialWeights;
 
     private int inputLayerSize;
     private int outputLayerSize;
     private int hiddenLayerSize;
-    private ActivationFunction activationFunction = new Sygmoid();
+    private ActivationFunction activationFunction = new HyperbolicTangent();
 
     private ArrayList<Matrix> weights = new ArrayList<>();
     private Matrix inputData;
@@ -27,11 +28,19 @@ public class NeuralNet {
     private Matrix z3;
     private Matrix yhat;
     private Matrix a2;
+    private Matrix dJdW1;
+    private Matrix dJdW2;
+    private double alpha = 0.1;
+    private int iterations = 100000;
 
-     NeuralNet(){
-         if(!testMode){
+    NeuralNet(){
+        boolean testMode = true;
+        //noinspection ConstantConditions
+        if(!testMode){
              setHyperParameters();
          }else{
+
+             System.out.println("Running in Test mode: \n Default HyperParams set. HyperbolicTangent Activation Function used");
 
              inputLayerSize = 2;
              outputLayerSize = 1;
@@ -39,71 +48,69 @@ public class NeuralNet {
          }
          generateWeights();
          generateTrainingMatrices();
-
-         Matrix yhat = forward();
-         Matrix error = getSqrError(yhat);
-         System.out.println("SquaredError :");
-         error.print(1, 3);
-         System.out.println("Target Data: ");
-         targetData.print(1, 3);
-         backPropagate(yhat);
+         train();
+         System.out.println("Estimated values"); yhat.print(1,5);
+         System.out.println("Training values"); targetData.print(1, 5);
     }
 
-    private Matrix forward(){
-
-        System.out.println("Beginning forward propagation... \n");
-
-        System.out.println("Training Data:");
-        inputData.print(1, 5);
-
-        System.out.println("Weight matrices:");
-
-        for(Matrix m : weights){
-            m.print(1, 5);
-        }
+    private void forward(){
+        //TODO: Generalise based on hyperparams
 
         z2 = new Matrix(inputData.times(weights.get(0)).getArray());
-        System.out.println("z2");
-        z2.print(1, 5);
 
         a2 = activationFunction.apply(z2);
-        System.out.println("a2");
-        a2.print(1, 5);
 
         z3 = new Matrix(a2.times(weights.get(1)).getArray());
-        System.out.println("z3");
-        z3.print(1, 5);
 
         yhat = activationFunction.apply(z3);
-        System.out.println("Forward Propagation results :");
-        yhat.print(1, 5);
 
-        return yhat;
     }
 
-    private Matrix backPropagate(Matrix estimated){
-
-        System.out.println("Beggining Backpropagation: ");
+    private void backPropagate(Matrix estimated){
+        //TODO: Generalise this based on the hyperparams
 
         //dJdW2
         Matrix m = targetData.minus(estimated).times(-1);
         Matrix delta3 = m.arrayTimes(activationFunction.applyGradFunc(z3));
-        Matrix dJdW2 = a2.transpose().times(delta3);
+        dJdW2 = a2.transpose().times(delta3);
 
         //dJdW1
-        Matrix j = delta3.times(weights.get(1).transpose()); j.print(1, 3);
-        Matrix delta2 = activationFunction.applyGradFunc(z2).arrayTimes(j); delta2.print(1, 3);
-        Matrix dJdW1 = inputData.transpose().times(delta2);
+        Matrix j = delta3.times(weights.get(1).transpose());
+        Matrix delta2 = activationFunction.applyGradFunc(z2).arrayTimes(j);
+        dJdW1 = inputData.transpose().times(delta2);
 
-
-        System.out.println("Computing Costs :");
-        dJdW2.print(1, 3);
-        dJdW1.print(1, 3);
-
-        return null;
     }
 
+    private void train(){
+
+        System.out.println("Beginning Optimisation (Modified Least Squares)\n Showing every 100th iteration:\n");
+
+        for (int i = 0; i<iterations;i++){
+            forward();
+            backPropagate(yhat);
+
+            if(i%1000==0){yhat.print(1,3);}
+
+            if(computeCost(yhat)<0.0000001){System.out.println("Optimisation finished terminated by low error at " + i + " iterations: ");break;}
+
+            weights.get(0).minusEquals(dJdW1.times(alpha));
+            weights.get(1).minusEquals(dJdW2.times(alpha));
+        }
+
+
+
+        //Output
+        System.out.println("\nTrained Weights: ");
+        weights.get(0).print(1,3);
+        weights.get(1).print(1, 3);
+        System.out.println("Weight Jacobian's");
+        dJdW1.print(1, 10);
+        dJdW2.print(1,10);
+    }
+
+
     private void generateTrainingMatrices(){
+        //TODO: Refactor this somehow, it will probably become obsolete
         inputData = normaliseMatrix(new Matrix(trainingIn));
         targetData = normaliseMatrix(new Matrix(trainingOut, 3));
         System.out.println("Normalised Data: ");
@@ -112,9 +119,15 @@ public class NeuralNet {
 
     }
 
-    private Matrix getSqrError(Matrix estimates){
-        Matrix error = targetData.minus(estimates);
-        return error.arrayTimesEquals(targetData.minus(estimates));
+    /**
+     *
+     * @param estimates; The cost associated with every training example
+     * @return the total mean squares error
+     */
+    private double computeCost(Matrix estimates){
+        Matrix objectiveFunction = targetData.minus(estimates);
+        objectiveFunction = objectiveFunction.arrayTimesEquals(targetData.minus(estimates));
+        return sum(objectiveFunction)/objectiveFunction.getColumnDimension();
     }
 
     /**
@@ -122,9 +135,10 @@ public class NeuralNet {
      */
     private void generateWeights(){
        //TODO: Make this actually use the hyperparams
+        //TODO: Make initial weights pseudo-random
 
-       Matrix W1 =  Matrix.random(inputLayerSize, hiddenLayerSize);
-       Matrix W2 =  Matrix.random(hiddenLayerSize, outputLayerSize);
+       Matrix W1 =  Matrix.random(inputLayerSize, hiddenLayerSize).minus(new Matrix(inputLayerSize, hiddenLayerSize, 1));
+       Matrix W2 =  Matrix.random(hiddenLayerSize, outputLayerSize).minus(new Matrix(hiddenLayerSize, outputLayerSize, 1));
 
        System.out.println("Randomly generated weights:");
 
@@ -132,6 +146,8 @@ public class NeuralNet {
        W2.print(1, 3);
 
        weights.add(W1); weights.add(W2);
+       initialWeights = new ArrayList<>();
+       initialWeights.add(W1.copy()); initialWeights.add(W2.copy());
 
     }
 
@@ -150,11 +166,17 @@ public class NeuralNet {
         System.out.println("Please enter the Hidden Layer size");
         hiddenLayerSize = Integer.parseInt(System.console().readLine());
     }
+
+
     ///////////////////////////
     //////HELPER FUNCTIONS/////
     ///////////////////////////
 
-
+    /**
+     *
+     * @param matrix
+     * @return The maximum value in the matrix
+     */
     public static double getMax(Matrix matrix) {
         double max = Double.MIN_VALUE;
 
@@ -170,12 +192,31 @@ public class NeuralNet {
     /**
      *
      * @param matrix
-     * @return The matrix, with the data normalised to 1
+     * @return The matrix, with the data normalised to 1 based on the maximum value
      */
     public static Matrix normaliseMatrix(Matrix matrix){
-        System.out.println("Normalising, max = " + getMax(matrix));
-        Matrix normalised = matrix.times(1/getMax(matrix));
+        Matrix normalised;
+        normalised = matrix.times(1/getMax(matrix));
         return normalised;
+    }
+
+    /**
+     * Computes the sum the elements of a matrix.
+     *
+     * @param m the matrix.
+     * @return the sum of the elements of the matrix
+     */
+    public static double sum(Matrix m) {
+        int numRows = m.getRowDimension();
+        int numCols = m.getColumnDimension();
+        double sum = 0;
+        // loop through the rows and compute the sum
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
+                sum += m.get(i, j);
+            }
+        }
+        return sum;
     }
 
     ///////////////////////////
@@ -183,16 +224,17 @@ public class NeuralNet {
     ///////////////////////////
 
 
+    @SuppressWarnings("unused")
     private void testSygmoid(){
         System.out.println("Testing sygmoid: ");
-        System.out.println("Sygmoid(1) = " + activationFunction.apply(1) );
-        System.out.println("Sygmoid(-1, 0 1) = ");
+        System.out.println("LogisticFunction(1) = " + activationFunction.apply(1) );
+        System.out.println("LogisticFunction(-1, 0 1) = ");
         Matrix out = activationFunction.apply(new Matrix( new double[] {-1, 0, 1}, 1 ));
         out.print(1, 2);
 
         System.out.println("Testing sygmoidPrime: ");
         System.out.println("Sygmoidprime(1) = " + activationFunction.applyGradFunc(1) );
-        System.out.println("Sygmoid(-1, 0 1) = ");
+        System.out.println("LogisticFunction(-1, 0 1) = ");
         Matrix out2 = activationFunction.applyGradFunc(new Matrix( new double[] {-1, 0, 1}, 1 ));
         out2.print(1, 2);
 
@@ -202,7 +244,7 @@ public class NeuralNet {
 
 
     public static void main(String args[]) {
-        NeuralNet wyvren = new NeuralNet();
+        @SuppressWarnings("unused") NeuralNet wyvren = new NeuralNet();
     }
 
 
