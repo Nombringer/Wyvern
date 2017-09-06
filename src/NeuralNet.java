@@ -1,26 +1,27 @@
 import Jama.Matrix;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Base Neural Net class for project Wyvern.
  */
 
-
+//TODO: Implement early stopping and regularisation
 @SuppressWarnings({"FieldCanBeLocal", "WeakerAccess", "JavaDoc"})
 public class NeuralNet {
+
     private static final double[][] trainingIn =  {{3, 5}, {5, 1}, {10, 2}};
     private static final double[]   trainingOut = {75, 82, 93};
 
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private ArrayList<Matrix> initialWeights;
-
+    private int hiddenLayerNum = 1;
     private int inputLayerSize;
     private int outputLayerSize;
     private int hiddenLayerSize;
     private ActivationFunction activationFunction = new HyperbolicTangent();
 
     private ArrayList<Matrix> weights = new ArrayList<>();
+    private ArrayList<Matrix> weightCostGradient = new ArrayList<>(2);
     private Matrix inputData;
     private Matrix targetData;
 
@@ -32,6 +33,9 @@ public class NeuralNet {
     private Matrix dJdW2;
     private double alpha = 0.1;
     private int iterations = 100000;
+
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private ArrayList<Matrix> initialWeightStorage;
 
     NeuralNet(){
         boolean testMode = true;
@@ -79,6 +83,10 @@ public class NeuralNet {
         Matrix delta2 = activationFunction.applyGradFunc(z2).arrayTimes(j);
         dJdW1 = inputData.transpose().times(delta2);
 
+        weightCostGradient.set(0, dJdW1);
+        weightCostGradient.set(1, dJdW2);
+
+
     }
 
     private void train(){
@@ -93,8 +101,11 @@ public class NeuralNet {
 
             if(computeCost(yhat)<0.0000001){System.out.println("Optimisation finished terminated by low error at " + i + " iterations: ");break;}
 
-            weights.get(0).minusEquals(dJdW1.times(alpha));
-            weights.get(1).minusEquals(dJdW2.times(alpha));
+            for(int j = 0; j<weights.size();j++){
+                weights.get(j).minusEquals(weightCostGradient.get(j).times(alpha));
+            }
+           // weights.get(0).minusEquals(dJdW1.times(alpha));
+           // weights.get(1).minusEquals(dJdW2.times(alpha));
         }
 
 
@@ -135,19 +146,18 @@ public class NeuralNet {
      */
     private void generateWeights(){
        //TODO: Make this actually use the hyperparams
-        //TODO: Make initial weights pseudo-random
 
-       Matrix W1 =  Matrix.random(inputLayerSize, hiddenLayerSize).minus(new Matrix(inputLayerSize, hiddenLayerSize, 1));
-       Matrix W2 =  Matrix.random(hiddenLayerSize, outputLayerSize).minus(new Matrix(hiddenLayerSize, outputLayerSize, 1));
-
-       System.out.println("Randomly generated weights:");
-
-       W1.print(1, 3);
-       W2.print(1, 3);
+       Matrix W1 = newWeightMatrix(inputLayerSize, hiddenLayerSize, inputLayerSize * hiddenLayerNum);
+       Matrix W2 = newWeightMatrix(hiddenLayerSize, outputLayerSize, hiddenLayerSize*outputLayerSize);
 
        weights.add(W1); weights.add(W2);
-       initialWeights = new ArrayList<>();
-       initialWeights.add(W1.copy()); initialWeights.add(W2.copy());
+
+        for (int i = 0; i < weights.size(); i++) {
+            weightCostGradient.add(new Matrix(weights.get(i).getRowDimension(), weights.get(i).getColumnDimension()));
+        }
+
+       initialWeightStorage = new ArrayList<>();
+       initialWeightStorage.add(W1.copy()); initialWeightStorage.add(W2.copy());
 
     }
 
@@ -171,6 +181,33 @@ public class NeuralNet {
     ///////////////////////////
     //////HELPER FUNCTIONS/////
     ///////////////////////////
+
+
+    /**
+     *
+     * @param i Rows
+     * @param j Collums
+     * @param m number of inputs to the next module
+     * @return Weights taken from a distribution of mean = 0 and std dev = m^-1/2
+     */
+    public static Matrix newWeightMatrix(int i, int j, int m){
+
+        Random r = new Random();
+        Matrix weightLayer = new Matrix(i, j);
+
+        for (int k = 0; k < weightLayer.getRowDimension(); k++) {
+            for (int l = 0; l < weightLayer.getColumnDimension(); l++) {
+
+                double nextval = r.nextGaussian() * 1/Math.sqrt(m);
+
+                weightLayer.set(k, l, nextval);
+            }
+
+        }
+
+    return weightLayer;
+    }
+
 
     /**
      *

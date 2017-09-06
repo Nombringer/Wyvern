@@ -5,7 +5,7 @@ import Jama.Matrix;
  */
 public abstract class ActivationFunction {
 
-    static double momentumTerm = 0.3;
+    static double momentumTerm = 0.01;
 
     abstract double apply(double input);
 
