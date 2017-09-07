@@ -5,6 +5,7 @@ import java.util.Random;
 
 /**
  * Base Neural Net class for project Wyvern.
+ * All done using basic linear algebra and matrix operands from the Jama library
  */
 
 //TODO: Implement early stopping and regularisation
@@ -80,20 +81,23 @@ public class NeuralNet {
 
     }
 
+    /**
+     * Trains the network, using the specified:
+     * Update Rule
+     * Termination Rule
+     * Activation Function
+     * TODO: Parametrise these somehow
+     */
     private void train(){
         int iterations = 1;
-
-        //TODO: This is an ugly way to avoid nullpointers
-        forwardPropagate();
+        forwardPropagate(); //TODO: This is an ugly way to avoid null pointers should probably be changed
         backPropagate(yhat);
         System.out.println("Beginning Optimisation (Modified Least Squares)\n Showing every 1000th iteration:\n");
 
         while (checkEstimates()&&iterations<maxIterations){
             forwardPropagate();
             backPropagate(yhat);
-
-            if (iterations%1000 ==0){printWeights(0); printCurrentCost();}
-
+            if(iterations%1000 ==0){printWeights(0); printCurrentCost();}
             update();
             iterations++;
         }
@@ -152,6 +156,8 @@ public class NeuralNet {
             outputLayerSize = targetData.getColumnDimension();
             return;
         }
+
+        //TODO: Start getting this to work.
 
         System.out.println("Setting HyperParameters: \n Please enter the input layer size:");
         inputLayerSize = Integer.parseInt(System.console().readLine());
