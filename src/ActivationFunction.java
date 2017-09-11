@@ -5,6 +5,8 @@ import Jama.Matrix;
  */
 public abstract class ActivationFunction {
 
+    //TODO This should be rewritten with lambda's somehow
+
     static double momentumTerm = 0.01;
 
     abstract double apply(double input);

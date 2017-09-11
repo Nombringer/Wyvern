@@ -44,6 +44,7 @@ public class NeuralNet {
          generateTrainingMatrices();
          setHyperParameters();
          generateWeights();
+         forwardPropagate();
          train();
          System.out.println("Estimated values"); yhat.print(1,5);
          System.out.println("Training values"); targetData.print(1, 5);
@@ -64,6 +65,7 @@ public class NeuralNet {
 
     private void backPropagate(Matrix estimated){
         //TODO: Generalise this based on the hyperparams
+        forwardPropagate();
 
         //dJdW2
         Matrix m = targetData.minus(estimated).times(-1);
@@ -89,11 +91,9 @@ public class NeuralNet {
      * TODO: Parametrise these somehow
      */
     private void train(){
-        int iterations = 1;
-        forwardPropagate(); //TODO: This is an ugly way to avoid null pointers should probably be changed
+        int iterations = 0;
         backPropagate(yhat);
         System.out.println("Beginning Optimisation (Modified Least Squares)\n Showing every 1000th iteration:\n");
-
         while (checkEstimates()&&iterations<maxIterations){
             forwardPropagate();
             backPropagate(yhat);
