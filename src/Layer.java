@@ -5,8 +5,11 @@ import Jama.Matrix;
  */
 public class Layer extends Matrix {
 
+    //TODO: Different type for Neurons and wieghts, or have each module contain both? Decide
+
     private ActivationFunction layerActivationFunction;
     private int neuronNum;
+    private Neuron[] neurons;
 
     public ActivationFunction getLayerActivationFunction() {
         return layerActivationFunction;
@@ -20,6 +23,7 @@ public class Layer extends Matrix {
         return neuronNum;
     }
 
+    //TODO: Create a method to apply a function to everything
 
     public Layer(int i, int i1) {
         super(i, i1);

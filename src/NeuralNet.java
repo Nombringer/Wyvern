@@ -26,6 +26,7 @@ public class NeuralNet {
     private ActivationFunction activationFunction = new HyperbolicTangent();
     private ArrayList<Matrix> weights = new ArrayList<>();
     private ArrayList<Matrix> weightCostGradient = new ArrayList<>(2);
+    private ArrayList<Matrix> layers = new ArrayList<>();
     private Matrix inputData;
     private Matrix targetData;
 
@@ -63,6 +64,12 @@ public class NeuralNet {
 
     }
 
+    private void forwardProp(){
+        for(Matrix biasLayer:)
+
+
+    }
+
     private void backPropagate(Matrix estimated){
         //TODO: Generalise this based on the hyperparams
         forwardPropagate();
@@ -79,6 +86,11 @@ public class NeuralNet {
 
         weightCostGradient.set(0, dJdW1);
         weightCostGradient.set(1, dJdW2);
+
+
+    }
+
+    private void backProp(Matrix estimated){
 
 
     }
