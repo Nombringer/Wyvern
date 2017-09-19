@@ -40,4 +40,9 @@ import Jama.Matrix;
         }
        return out;
     }
+
+    @Override
+    public ActivationFunction copy() {
+        return new LogisticFunction();
+    }
 }

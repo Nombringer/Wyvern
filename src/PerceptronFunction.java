@@ -35,4 +35,9 @@ public class PerceptronFunction extends ActivationFunction {
     Matrix applyGradFunc(Matrix input) {
         return null;
     }
+
+    @Override
+    public ActivationFunction copy() {
+        return new PerceptronFunction();
+    }
 }

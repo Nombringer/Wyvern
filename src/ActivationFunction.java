@@ -24,4 +24,6 @@ public abstract class ActivationFunction {
     public static void setMomentumTerm(double momentumTerm) {
         ActivationFunction.momentumTerm = momentumTerm;
     }
+
+    public abstract ActivationFunction copy();
 }

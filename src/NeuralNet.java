@@ -22,16 +22,19 @@ public class NeuralNet {
     private int hiddenLayerNum = 1;
     private int inputLayerSize;
     private int outputLayerSize;
-    private int hiddenLayerSize;
+    private int hiddenLayerSize = 3;
+
+    private ArrayList<Integer> layerSizes = new ArrayList<>();
+
     private ActivationFunction activationFunction = new HyperbolicTangent();
-    private ArrayList<Matrix> weights = new ArrayList<>();
-    private ArrayList<Matrix> weightCostGradient = new ArrayList<>(2);
-    private ArrayList<Matrix> layers = new ArrayList<>();
+    private ArrayList<WeightLayer> weights = new ArrayList<>();
+    private ArrayList<WeightLayer> weightCostGradient = new ArrayList<>(2);
+    private ArrayList<BiasLayer> layers = new ArrayList<>();
     private Matrix inputData;
     private Matrix targetData;
 
-    private Matrix z2;
-    private Matrix z3;
+    private WeightLayer z2;
+    private WeightLayer z3;
     private Matrix yhat;
     private Matrix a2;
     private Matrix dJdW1;
@@ -44,7 +47,7 @@ public class NeuralNet {
     NeuralNet(){
          generateTrainingMatrices();
          setHyperParameters();
-         generateWeights();
+         generateWeightLayers();
          forwardPropagate();
          train();
          System.out.println("Estimated values"); yhat.print(1,5);
@@ -65,7 +68,9 @@ public class NeuralNet {
     }
 
     private void forwardProp(){
-        for(Matrix biasLayer:)
+        for(Matrix biasLayer: layers){
+
+        }
 
 
     }
@@ -91,7 +96,6 @@ public class NeuralNet {
     }
 
     private void backProp(Matrix estimated){
-
 
     }
 
@@ -140,20 +144,28 @@ public class NeuralNet {
     /**
      * Generate the weights based on the the HyperParameters
      */
-    private void generateWeights(){
+    private void generateWeightLayers(){
        //TODO: Make this actually use the hyperparams
 
-       Matrix W1 = newWeightMatrix(inputLayerSize, hiddenLayerSize, inputLayerSize * hiddenLayerNum);
-       Matrix W2 = newWeightMatrix(hiddenLayerSize, outputLayerSize, hiddenLayerSize * outputLayerSize);
+       WeightLayer W1 = new WeightLayer(inputLayerSize, hiddenLayerSize, activationFunction, inputLayerSize*hiddenLayerNum);
+       WeightLayer W2 = new WeightLayer(hiddenLayerSize, outputLayerSize, activationFunction,  hiddenLayerSize*outputLayerSize);
 
-       weights.add(W1); weights.add(W2);
 
-        for (Matrix weight : weights) {
-            weightCostGradient.add(new Matrix(weight.getRowDimension(), weight.getColumnDimension()));
+        weights.add(W1); weights.add(W2);
+
+        for (Layer weight : weights) {
+            weightCostGradient.add(new WeightLayer(weight.getRowDimension(), weight.getColumnDimension(), activationFunction,0 ));
         }
 
        initialWeightStorage = new ArrayList<>();
        initialWeightStorage.add(W1.copy()); initialWeightStorage.add(W2.copy());
+
+    }
+
+    private void generateBiasLayers(){
+
+
+
 
     }
 
@@ -164,13 +176,23 @@ public class NeuralNet {
     private void setHyperParameters(){
         if(testMode){
             inputLayerSize = inputData.getColumnDimension();
-            hiddenLayerSize = 2;
             outputLayerSize = targetData.getColumnDimension();
+
+
+
+            //Using Layersizes
+            layerSizes.add(inputData.getColumnDimension());
+            //For testing, this should be done through console
+            for (int i = 0; i <hiddenLayerNum ; i++) {
+                layerSizes.add(hiddenLayerSize);
+            }
+            layerSizes.add(targetData.getColumnDimension());
+
             return;
         }
 
         //TODO: Start getting this to work.
-
+        /*
         System.out.println("Setting HyperParameters: \n Please enter the input layer size:");
         inputLayerSize = Integer.parseInt(System.console().readLine());
 
@@ -179,7 +201,7 @@ public class NeuralNet {
 
         System.out.println("Please enter the Hidden Layer size");
         hiddenLayerSize = Integer.parseInt(System.console().readLine());
-
+        */
 
     }
 

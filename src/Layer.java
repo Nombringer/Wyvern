@@ -3,65 +3,48 @@ import Jama.Matrix;
 /**
  * Created by fabd on 12/09/17.
  */
-public class Layer extends Matrix {
-
-    //TODO: Different type for Neurons and wieghts, or have each module contain both? Decide
+  abstract class Layer extends Matrix {
 
     private ActivationFunction layerActivationFunction;
-    private int neuronNum;
-    private Neuron[] neurons;
 
-    public ActivationFunction getLayerActivationFunction() {
-        return layerActivationFunction;
+    public Layer(int i, int i1, ActivationFunction layerFunction) {
+        super(i, i1);
+        layerActivationFunction = layerFunction;
     }
+
+
+    public void applyFunction(ActivationFunction function){
+        for (int i = 0; i < this.getRowDimension(); i++) {
+
+            for (int j = 0; j < this.getColumnDimension(); j++) {
+                this.set(i, j, function.apply((this.get(i,j))));
+            }
+        }
+    }
+
+    public void applyLayerFunction(){
+        for (int i = 0; i < this.getRowDimension(); i++) {
+
+            for (int j = 0; j < this.getColumnDimension(); j++) {
+                this.set(i, j, layerActivationFunction.apply((this.get(i,j))));
+            }
+        }
+    }
+
+
+
+
+    //////////////////////////////
+    /////GETTERS//AND//SETTERS////
+    //////////////////////////////
 
     public void setLayerActivationFunction(ActivationFunction layerActivationFunction) {
         this.layerActivationFunction = layerActivationFunction;
     }
 
-    public int getNeuronNum() {
-        return neuronNum;
+    public ActivationFunction getLayerActivationFunction() {
+        return layerActivationFunction;
     }
 
-    //TODO: Create a method to apply a function to everything
-
-    public Layer(int i, int i1) {
-        super(i, i1);
-        neuronNum = this.getColumnDimension();
-    }
-
-    public Layer(int i, int i1, double v) {
-        super(i, i1, v);
-        neuronNum = this.getColumnDimension();
-    }
-
-    public Layer(double[][] doubles) {
-        super(doubles);
-        neuronNum = this.getColumnDimension();
-    }
-
-    public Layer(double[][] doubles, int i, int i1) {
-        super(doubles, i, i1);
-        neuronNum = this.getColumnDimension();
-    }
-
-    public Layer(double[] doubles, int i) {
-        super(doubles, i);
-        neuronNum = this.getColumnDimension();
-    }
-
-    private class Neuron {
-
-
-        private ActivationFunction activationFunction;
-
-        private ActivationFunction getActivationFunction() {
-            return activationFunction;
-        }
-
-        private void setActivationFunction(ActivationFunction activationFunction) {
-            this.activationFunction = activationFunction;
-        }
-    }
 
 }

@@ -45,4 +45,9 @@ public class HyperbolicTangent extends ActivationFunction {
         }
         return out;
     }
+
+    @Override
+    public ActivationFunction copy() {
+        return new HyperbolicTangent();
+    }
 }
