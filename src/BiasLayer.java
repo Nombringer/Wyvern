@@ -5,15 +5,14 @@
  */
   class BiasLayer extends Layer {
 
-    private ActivationFunction layerActivationFunction;
     private Neuron[] neurons;
 
     public BiasLayer(int i, int i1, ActivationFunction layerFunction) {
         super(i, i1, layerFunction);
-
         neurons = new Neuron[this.getColumnDimension()];
+
         for (int j = 0; j < neurons.length; j++) {
-            neurons[i] = new Neuron(i, layerFunction);
+            neurons[j] = new Neuron(i, layerFunction);
         }
     }
 

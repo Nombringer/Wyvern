@@ -24,7 +24,6 @@ import Jama.Matrix;
 
     public void applyLayerFunction(){
         for (int i = 0; i < this.getRowDimension(); i++) {
-
             for (int j = 0; j < this.getColumnDimension(); j++) {
                 this.set(i, j, layerActivationFunction.apply((this.get(i,j))));
             }
@@ -32,7 +31,14 @@ import Jama.Matrix;
     }
 
 
-
+    public void matrixTimesEquals(Matrix A, Matrix B){
+        Matrix vals = A.times(B);
+        for (int i = 0; i < this.getRowDimension(); i++) {
+            for (int j = 0; j < this.getColumnDimension(); j++) {
+                this.set(i, j, vals.get(i, j));
+            }
+        }
+    }
 
     //////////////////////////////
     /////GETTERS//AND//SETTERS////
