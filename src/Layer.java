@@ -5,7 +5,7 @@ import Jama.Matrix;
  */
   abstract class Layer extends Matrix {
 
-    private ActivationFunction layerActivationFunction;
+    protected ActivationFunction layerActivationFunction;
 
     public Layer(int i, int i1, ActivationFunction layerFunction) {
         super(i, i1);

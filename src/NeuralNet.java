@@ -86,9 +86,6 @@ public class NeuralNet {
             i++;
         }
         yhat = biasLayers.get(biasLayers.size()-1);
-
-        for (Matrix m: biasLayers){m.print(1, 3);}
-
     }
 
     private void backPropagate(Matrix estimated){
@@ -113,6 +110,38 @@ public class NeuralNet {
 
     private void backProp(Matrix estimated){
 
+        //TODO: Generalise this based on the hyperparams
+        forwardProp(inputData);
+
+        //dJdW2
+        Matrix m = targetData.minus(estimated).times(-1);
+        Matrix delta3 = m.arrayTimes(biasLayers.get(biasLayers.size() -1).getGradients());
+        dJdW2 = biasLayers.get(biasLayers.size() -2).transpose().times(delta3);
+
+        //dJdW1
+        Matrix j = delta3.times(weights.get(1).transpose());
+        Matrix delta2 = biasLayers.get(biasLayers.size() -2).arrayTimes(j);
+        dJdW1 = inputData.transpose().times(delta2);
+
+        weightCostGradient.set(0, dJdW1);
+        weightCostGradient.set(1, dJdW2);
+
+
+        Matrix deltaPrev = new Matrix(1, 1);
+        Matrix matrix;
+
+        for (int i = biasLayers.size()-1; i >=0; i--) {
+            if(i == biasLayers.size()-1){ matrix = targetData.minus(estimated).times(-1);}
+
+            else{matrix = deltaPrev.times(weights.get(i).transpose());}
+            Matrix delta = matrix.arrayTimes(biasLayers.get(i).getGradients());
+            Matrix weightLayerGradient = biasLayers.get(i-1).transpose().times(delta);
+            deltaPrev = delta;
+            weightCostGradient.set(i, weightLayerGradient);
+        }
+
+
+
     }
 
     /**
@@ -124,10 +153,24 @@ public class NeuralNet {
      */
     private void train(){
         int iterations = 0;
-        backPropagate(yhat);
+        backProp(yhat);
         System.out.println("Beginning Optimisation (Modified Least Squares)\n Showing every 1000th iteration:\n");
         while (checkEstimates()&&iterations<maxIterations){
             forwardProp(inputData);
+            backProp(yhat);
+            //if(iterations%10000 ==0){ printCurrentCost();}
+            update();
+            iterations++;
+        }
+
+    }
+
+    private void traint(){
+        int iterations = 0;
+        backPropagate(yhat);
+        System.out.println("Beginning Optimisation (Modified Least Squares)\n Showing every 1000th iteration:\n");
+        while (checkEstimates()&&iterations<maxIterations){
+            forwardPropagate(inputData);
             backPropagate(yhat);
             if(iterations%1000 ==0){printWeights(0); printCurrentCost();}
             update();
@@ -137,6 +180,7 @@ public class NeuralNet {
         //Output
         System.out.println("\nTrained Weights: ");
         printWeights(0);
+
     }
 
 
