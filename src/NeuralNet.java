@@ -122,7 +122,7 @@ public class NeuralNet {
         while (checkEstimates()&&iterations<maxIterations){
             forwardProp(inputData);
             backProp(yhat);
-            if(iterations%10000 ==0){ printWeightCostGradient(0);}
+            //if(iterations%10000 ==0){ printWeightCostGradient(0);}
             update();
             iterations++;
         }
