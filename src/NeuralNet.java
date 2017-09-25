@@ -56,16 +56,13 @@ public class NeuralNet {
         //TODO: Figure out what should actually be here.
 
         if(testMode){
-
             //Generates and trains the network on the WelchLabs training set.
+            generateTrainingMatrices();
             inputLayerSize = inputData.getColumnDimension();
             outputLayerSize = targetData.getColumnDimension();
-            layerSizes.add(inputLayerSize); layerSizes.add(10); layerSizes.add(3); layerSizes.add(3); layerSizes.add(outputLayerSize);
+            layerSizes.add(inputLayerSize); layerSizes.add(10); layerSizes.add(outputLayerSize);
 
-            generateTrainingMatrices();
-            setHyperParameters();
             generateWeightLayers();
-            inputData.print(1, 3);
             generateBiasLayers(inputData);
             forwardProp(inputData);
             train();
@@ -114,7 +111,7 @@ public class NeuralNet {
             Matrix deltaPrime = biasLayers.get(biasLayers.size() -i -1).arrayTimes(matrix);
 
             if (biasLayers.size() -i -1 == 0){
-             dJdW = inputData.transpose().times(deltaPrime);}else {
+             dJdW = inputData.transpose().times(deltaPrime);}else{
                 dJdW = biasLayers.get(biasLayers.size() -i -2).transpose().times(deltaPrime);
             }
             weightCostGradient.set(weightCostGradient.size() -i -1, dJdW);
@@ -143,7 +140,7 @@ public class NeuralNet {
         while (checkEstimates()&&iterations<maxIterations){
             forwardProp(inputData);
             backProp(estimates);
-            //if(iterations%10000 ==0){ printWeightCostGradient(0);}
+            if(iterations%10000 ==0){ printWeightCostGradient(0);}
             update();
             iterations++;
         }
