@@ -68,6 +68,11 @@ public class NeuralNet {
             train();
             System.out.println("Estimated values"); estimates.print(1,5);
             System.out.println("Training values"); targetData.print(1, 5);
+
+            System.out.println("Testing input [3][5]");
+            double[] testIn = {3, 5}; Matrix input = new Matrix(testIn ,1);
+            System.out.println(getEstimates(input));
+
         }
 
     }
@@ -121,6 +126,13 @@ public class NeuralNet {
 
     }
 
+    private double[][] getEstimates(Matrix in){
+        generateBiasLayers(in);
+        forwardProp(in);
+        estimates.print(1,3);
+        return estimates.getArray();
+    }
+
     /////////////////////
     //////TRAINING///////
     /////////////////////
@@ -140,7 +152,7 @@ public class NeuralNet {
         while (checkEstimates()&&iterations<maxIterations){
             forwardProp(inputData);
             backProp(estimates);
-            if(iterations%10000 ==0){ printWeightCostGradient(0);}
+            //if(iterations%10000 ==0){ printWeightCostGradient(0);} TODO: Make this some kind of param in the trainer.
             update();
             iterations++;
         }
@@ -204,6 +216,8 @@ public class NeuralNet {
      * Dimensions are based on the dimensions of the input matrix, ie # of training examples
      */
     private void generateBiasLayers(Matrix input){
+        //TODO: Currently the layers are regenerated on input, meaning we can edit individual activation functions, maybe add some kind of thing that lets you scale the size
+        biasLayers = new ArrayList<>();
         for (int i = 1; i <(layerSizes.size()); i++) {
             biasLayers.add(new BiasLayer(input.getRowDimension(), layerSizes.get(i) , activationFunction));
         }
