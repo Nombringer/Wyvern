@@ -1,7 +1,6 @@
-package Network;
+package Network.Layer;
 
 import Network.ActivationFunction.ActivationFunction;
-import Network.ActivationFunction.ActivationFunctionImpl;
 
 import java.util.Random;
 

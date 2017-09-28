@@ -1,4 +1,4 @@
-package Network;
+package Network.Layer;
 
 import Jama.Matrix;
 import Network.ActivationFunction.ActivationFunction;

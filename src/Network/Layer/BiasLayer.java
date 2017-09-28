@@ -1,13 +1,12 @@
-package Network;
+package Network.Layer;
 
 import Jama.Matrix;
 import Network.ActivationFunction.ActivationFunction;
-import Network.ActivationFunction.ActivationFunctionImpl;
 
 /**
  * Created by fabd on 12/09/17.
  */
-  class BiasLayer extends Layer {
+public class BiasLayer extends Layer {
 
     private Neuron[] neurons;
     private Matrix rawVals;
