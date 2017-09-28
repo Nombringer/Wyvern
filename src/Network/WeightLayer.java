@@ -1,4 +1,7 @@
-import Jama.Matrix;
+package Network;
+
+import Network.ActivationFunction.ActivationFunction;
+import Network.ActivationFunction.ActivationFunctionImpl;
 
 import java.util.Random;
 
@@ -25,7 +28,7 @@ public class WeightLayer extends Layer {
     }
 
     public WeightLayer copy(){
-        WeightLayer newWLayer = new WeightLayer(this.getRowDimension(), this.getColumnDimension(), getLayerActivationFunction().copy(), inputNum);
+        WeightLayer newWLayer = new WeightLayer(this.getRowDimension(), this.getColumnDimension(), this.getLayerActivationFunction(), inputNum);
         for (int i = 0; i < this.getRowDimension(); i++) {
             for (int j = 0; j < this.getColumnDimension(); j++) {
                 newWLayer.set(i, j, this.get(i, j));

@@ -1,4 +1,8 @@
+package Network;
+
 import Jama.Matrix;
+import Network.ActivationFunction.ActivationFunction;
+import Network.ActivationFunction.ActivationFunctionImpl;
 
 /**
  * Created by fabd on 12/09/17.
@@ -13,7 +17,7 @@ import Jama.Matrix;
     }
 
 
-    public void applyFunction(ActivationFunction function){
+    public void applyFunction(ActivationFunctionImpl function){
         for (int i = 0; i < this.getRowDimension(); i++) {
 
             for (int j = 0; j < this.getColumnDimension(); j++) {

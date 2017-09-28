@@ -1,4 +1,9 @@
+package Network;
+
 import Jama.Matrix;
+import Network.ActivationFunction.ActivationFunction;
+import Network.ActivationFunction.HyperbolicTangent;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -35,7 +40,7 @@ public class NeuralNet {
     private ArrayList<Integer> layerSizes = new ArrayList<>();
 
     //Default activation function for all bias layers in the network
-    private ActivationFunction activationFunction = new HyperbolicTangent();
+    private ActivationFunction BiasLayerFunction = new HyperbolicTangent();
 
     //Storage for Bias and Weight classes
     private ArrayList<Matrix> weights = new ArrayList<>();
@@ -202,11 +207,11 @@ public class NeuralNet {
      */
     private void generateWeightLayers(){
        for(int i = 0; i<layerSizes.size() -1; i++){
-           WeightLayer weightLayer = new WeightLayer(layerSizes.get(i), layerSizes.get(i+1), activationFunction, layerSizes.get(i)*layerSizes.get(i+1));
+           WeightLayer weightLayer = new WeightLayer(layerSizes.get(i), layerSizes.get(i+1), BiasLayerFunction, layerSizes.get(i)*layerSizes.get(i+1));
            weights.add(weightLayer);
        }
        for (Matrix weight : weights) {
-            weightCostGradient.add(new WeightLayer(weight.getRowDimension(), weight.getColumnDimension(), activationFunction,0 ));
+            weightCostGradient.add(new WeightLayer(weight.getRowDimension(), weight.getColumnDimension(), BiasLayerFunction,0 ));
        }
     }
 
@@ -219,7 +224,7 @@ public class NeuralNet {
         //TODO: Currently the layers are regenerated on input, meaning we can edit individual activation functions, maybe add some kind of thing that lets you scale the size
         biasLayers = new ArrayList<>();
         for (int i = 1; i <(layerSizes.size()); i++) {
-            biasLayers.add(new BiasLayer(input.getRowDimension(), layerSizes.get(i) , activationFunction));
+            biasLayers.add(new BiasLayer(input.getRowDimension(), layerSizes.get(i) , BiasLayerFunction));
         }
     }
 
@@ -249,7 +254,7 @@ public class NeuralNet {
         System.out.println("Please enter the outputLayer size");
         outputLayerSize = Integer.parseInt(System.console().readLine());
 
-        System.out.println("Please enter the Hidden Layer size");
+        System.out.println("Please enter the Hidden Network.Layer size");
         hiddenLayerSize = Integer.parseInt(System.console().readLine());
         */
     }
@@ -385,15 +390,15 @@ public class NeuralNet {
     @SuppressWarnings("unused")
     private void testSygmoid(){
         System.out.println("Testing sygmoid: ");
-        System.out.println("LogisticFunction(1) = " + activationFunction.apply(1) );
-        System.out.println("LogisticFunction(-1, 0 1) = ");
-        Matrix out = activationFunction.apply(new Matrix( new double[] {-1, 0, 1}, 1 ));
+        System.out.println("Network.ActivationFunctionImpl.LogisticFunctionImpl(1) = " + BiasLayerFunction.apply(1) );
+        System.out.println("Network.ActivationFunctionImpl.LogisticFunctionImpl(-1, 0 1) = ");
+        Matrix out = BiasLayerFunction.apply(new Matrix( new double[] {-1, 0, 1}, 1 ));
         out.print(1, 2);
 
         System.out.println("Testing sygmoidPrime: ");
-        System.out.println("Sygmoidprime(1) = " + activationFunction.applyGradFunc(1) );
-        System.out.println("LogisticFunction(-1, 0 1) = ");
-        Matrix out2 = activationFunction.applyGradFunc(new Matrix( new double[] {-1, 0, 1}, 1 ));
+        System.out.println("Sygmoidprime(1) = " + BiasLayerFunction.applyGradFunc(1) );
+        System.out.println("Network.ActivationFunctionImpl.LogisticFunctionImpl(-1, 0 1) = ");
+        Matrix out2 = BiasLayerFunction.applyGradFunc(new Matrix( new double[] {-1, 0, 1}, 1 ));
         out2.print(1, 2);
 
 

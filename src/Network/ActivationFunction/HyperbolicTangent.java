@@ -1,9 +1,11 @@
+package Network.ActivationFunction;
+
 import Jama.Matrix;
 
 /**
  * Created by fabd on 5/09/17.
  */
-public class HyperbolicTangent extends ActivationFunction {
+public class HyperbolicTangent extends ActivationFunctionImpl {
 
 
     @Override
@@ -47,7 +49,7 @@ public class HyperbolicTangent extends ActivationFunction {
     }
 
     @Override
-    public ActivationFunction copy() {
+    public ActivationFunctionImpl copy() {
         return new HyperbolicTangent();
     }
 }
