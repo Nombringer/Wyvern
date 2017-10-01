@@ -40,7 +40,9 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
 
 
     //TODO: This stuff might not make so much now that sizes are modular and stored elsewhere, refactor.
+    @Deprecated
     private int inputLayerSize;
+    @Deprecated
     private int outputLayerSize;
     private Matrix inputData;
     private Matrix targetData;
@@ -68,7 +70,7 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
 
         if(testMode){
             //Generates and trains the network on the WelchLabs training set.
-            generateTrainingMatrices();
+            //generateTrainingMatrices();
             inputLayerSize = inputData.getColumnDimension();
             outputLayerSize = targetData.getColumnDimension();
             layerSizes.add(inputLayerSize); layerSizes.add(10); layerSizes.add(outputLayerSize);
@@ -89,9 +91,10 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
     }
 
     public NeuralNetImpl(Matrix in, Matrix out, ArrayList<Integer> hiddenLayerSizes){
-
-
-
+        setInputData(in);
+        setOutData(out);
+        generateWeightLayers();
+        generateBiasLayers(inputData);
     }
 
 
@@ -146,11 +149,26 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
 
     }
 
+    /**
+     * @param in, input matrix, needs match input size of training set
+     * @return double array of the estimates
+     */
+
     public double[][] getEstimates(Matrix in){
         generateBiasLayers(in);
         forwardProp(in);
         estimates.print(1,3);
         return estimates.getArray();
+    }
+
+    /**
+     * @param in input Matrix, needs to match input size of training set.
+     * @return
+     */
+    public Matrix computeEstimates(Matrix in){
+        generateBiasLayers(in);
+        forwardProp(in);
+        return estimates.copy();
     }
 
     /////////////////////
@@ -219,7 +237,7 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
      * Generate the weights based on the the HyperParameters
      * Also populates a list which corresponds to the derivatives of each layer with respect to the cost.
      */
-    private void generateWeightLayers(){
+    public void generateWeightLayers(){
        for(int i = 0; i<layerSizes.size() -1; i++){
            WeightLayer weightLayer = new WeightLayer(layerSizes.get(i), layerSizes.get(i+1), BiasLayerFunction, layerSizes.get(i)*layerSizes.get(i+1));
            weights.add(weightLayer);
@@ -234,20 +252,13 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
      * Generates the underlying matrices for the bias layers.
      * Dimensions are based on the dimensions of the input matrix, ie # of training examples
      */
-    private void generateBiasLayers(Matrix input){
+    public void generateBiasLayers(Matrix input){
         //TODO: Currently the layers are regenerated on input, meaning we can edit individual activation functions, maybe add some kind of thing that lets you scale the size
         biasLayers = new ArrayList<>();
         for (int i = 1; i <(layerSizes.size()); i++) {
             biasLayers.add(new BiasLayer(input.getRowDimension(), layerSizes.get(i) , BiasLayerFunction));
         }
     }
-
-    private void generateTrainingMatrices(){
-        //TODO: This should be refactored into utilities
-        inputData = normaliseMatrix(new Matrix(trainingIn));
-        targetData = normaliseMatrix(new Matrix(trainingOut, 3));
-    }
-
 
 
     ///////////////////////////
