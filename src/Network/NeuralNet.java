@@ -13,7 +13,7 @@ public interface NeuralNet {
 
     double[][] getEstimates(Matrix input);
 
-    void update(); //TODO: SHould pass in a lambda to this.
+    void update(); //TODO: Should pass in a lambda to this.
 
     double computeCost(Matrix estimates);
 }

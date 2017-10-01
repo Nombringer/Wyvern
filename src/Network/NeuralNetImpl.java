@@ -5,6 +5,8 @@ import Network.ActivationFunction.ActivationFunction;
 import Network.ActivationFunction.HyperbolicTangent;
 import Network.Layer.BiasLayer;
 import Network.Layer.WeightLayer;
+import Trainer.Trainer;
+
 import java.util.ArrayList;
 import static Ultil.MatrixUtils.normaliseMatrix;
 import static Ultil.MatrixUtils.sum;
@@ -19,27 +21,13 @@ import static Ultil.MatrixUtils.sum;
 /////NEXT THINGS, CHANGES AND REFACTORS//////
 /////////////////////////////////////////////
 
-//TODO: Figure out package structure.
-//TODO: Figure out the best way to implement better training methods.
-//TODO: Load up the MINST dataset and have some fun.
-//TODO: Write Utils package.
-
 
 @SuppressWarnings({"FieldCanBeLocal", "WeakerAccess", "JavaDoc"})
-public class NeuralNetImpl implements NeuralNet {
+public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
 
-    //Example training set from WelchLabs
-    private final boolean testMode = true;
-    private final double[][] trainingIn =  {{3, 5}, {5, 1}, {10, 2}};
-    private final double[]   trainingOut = {75, 82, 93};
-
-    //Arbitrary thresholds because nothing better has been implemented yet
-    private final int maxIterations = 100000;
-    private final double costThreshold = 0.0000001;
-    private final double learningRate = 0.1;
 
     //Stores the sizes of each layer. including input and output. Matrices are generated based off this.
-    private ArrayList<Integer> layerSizes = new ArrayList<>();
+    private ArrayList<Integer> layerSizes = new ArrayList<>(2);
 
     //Default activation function for all bias layers in the network
     private ActivationFunction BiasLayerFunction = new HyperbolicTangent();
@@ -59,8 +47,24 @@ public class NeuralNetImpl implements NeuralNet {
     private Matrix estimates;
 
 
-    NeuralNetImpl(){
-        //TODO: Figure out what should actually be here.
+    //Example training set from WelchLabs
+    private final boolean testMode = true;
+    private final double[][] trainingIn =  {{3, 5}, {5, 1}, {10, 2}};
+    private final double[]   trainingOut = {75, 82, 93};
+
+    //Arbitrary thresholds because nothing better has been implemented yet
+    private final int maxIterations = 100000;
+    private final double costThreshold = 0.0000001;
+    private final double learningRate = 0.1;
+
+
+
+    public NeuralNetImpl(){
+
+        //////////////////////
+        /////TESTING CRAP/////
+        //////////////////////
+
 
         if(testMode){
             //Generates and trains the network on the WelchLabs training set.
@@ -83,6 +87,15 @@ public class NeuralNetImpl implements NeuralNet {
         }
 
     }
+
+    public NeuralNetImpl(Matrix in, Matrix out, ArrayList<Integer> hiddenLayerSizes){
+
+
+
+    }
+
+
+
 
     ////////////////////////////////////
     /////FORWARD AND BACK PROPAGATION///
@@ -150,7 +163,6 @@ public class NeuralNetImpl implements NeuralNet {
      * Update Rule
      * Termination Rule
      * Activation Function
-     * TODO: The above are not fully implemented yet, there is a simple MaxIterations constant and a flat threshold for deciding if training should finish.
      */
     private void train(){
         int iterations = 0;
@@ -159,7 +171,7 @@ public class NeuralNetImpl implements NeuralNet {
         while (checkEstimates()&&iterations<maxIterations){
             forwardProp(inputData);
             backProp(estimates);
-            //if(iterations%10000 ==0){ printWeightCostGradient(0);} TODO: Make this some kind of param in the trainer.
+            //if(iterations%10000 ==0){ printWeightCostGradient(0);}
             update();
             iterations++;
         }
@@ -242,26 +254,15 @@ public class NeuralNetImpl implements NeuralNet {
     //////HELPER FUNCTIONS/////
     ///////////////////////////
 
-    //TODO: Migrate to Utils if needed.
-
-    /**
-     * Set the HyperParameters based on console input
-     */
-    private void setHyperParameters(){
-        //TODO: Start getting this to work.
-        /*
-        System.out.println("Setting HyperParameters: \n Please enter the input layer size:");
-        inputLayerSize = Integer.parseInt(System.console().readLine());
-
-        System.out.println("Please enter the outputLayer size");
-        outputLayerSize = Integer.parseInt(System.console().readLine());
-
-        System.out.println("Please enter the Hidden Network.Layer.Layer size");
-        hiddenLayerSize = Integer.parseInt(System.console().readLine());
-        */
+    public void setInputData(Matrix trainingIn){
+        inputData = normaliseMatrix(trainingIn);
+        layerSizes.set(0, trainingIn.getColumnDimension());
     }
 
-
+    public void setOutData(Matrix trainingOut) {
+        targetData = normaliseMatrix(trainingOut);
+        layerSizes.set(layerSizes.size() -1, trainingOut.getColumnDimension());
+    }
 
 
 
