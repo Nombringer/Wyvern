@@ -16,4 +16,6 @@ public interface NeuralNet {
     void update(); //TODO: Should pass in a lambda to this.
 
     double computeCost(Matrix estimates);
+
+    Matrix computeEstimates(Matrix in);
 }

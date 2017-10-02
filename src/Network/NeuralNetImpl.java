@@ -17,10 +17,6 @@ import static Ultil.MatrixUtils.sum;
  */
 
 
-/////////////////////////////////////////////
-/////NEXT THINGS, CHANGES AND REFACTORS//////
-/////////////////////////////////////////////
-
 
 @SuppressWarnings({"FieldCanBeLocal", "WeakerAccess", "JavaDoc"})
 public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract

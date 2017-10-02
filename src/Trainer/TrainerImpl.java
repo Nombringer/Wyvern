@@ -24,9 +24,7 @@ public abstract class TrainerImpl implements Trainer {
         trainingNet = net;
     }
 
-    public void Train(NeuralNet net, Matrix trainingInputs, Matrix trainingOutputs) {
-
-    }
+    public abstract void Train(NeuralNet net, Matrix trainingInputs, Matrix trainingOutputs);
 
     private void NormaliseTrainingMatrices(){
         normalisedIn = normaliseMatrix(trainingIn);
