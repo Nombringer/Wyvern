@@ -5,6 +5,7 @@ import Network.ActivationFunction.ActivationFunction;
 import Network.ActivationFunction.HyperbolicTangent;
 import Network.Layer.BiasLayer;
 import Network.Layer.WeightLayer;
+import Network.Trainer.UpdateRule;
 
 import java.util.ArrayList;
 import static Ultil.MatrixUtils.normaliseMatrix;
@@ -73,7 +74,7 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
             generateWeightLayers();
             generateBiasLayers(inputData);
             forwardProp(inputData);
-            train();
+            //train();
             System.out.println("Estimated values"); estimates.print(1,5);
             System.out.println("Training values"); targetData.print(1, 5);
 
@@ -177,6 +178,7 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
      * Termination Rule
      * Activation Function
      */
+    /*
     private void train(){
         int iterations = 0;
         backProp(estimates);
@@ -185,7 +187,7 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
             forwardProp(inputData);
             backProp(estimates);
             //if(iterations%10000 ==0){ printWeightCostGradient(0);}
-            update();
+            applyUpdateRule();
             iterations++;
         }
 
@@ -204,13 +206,14 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
 
 
     /**
-     * Updates every weight in the net based on the current update rule
+     * Updates every weight in the net based on the current applyUpdateRule rule
      */
-    public void update(){
+    public void applyUpdateRule(UpdateRule rule ){
         //TODO: Refactor into an "Update Rule" possibly in a trainer package.
-        for(int j = 0; j<weights.size();j++){
-            weights.get(j).minusEquals(weightCostGradient.get(j).times(learningRate));
-        }
+       // for(int j = 0; j<weights.size();j++){
+       //     weights.get(j).minusEquals(weightCostGradient.get(j).times(learningRate));
+       // }
+        rule.update(weights, weightCostGradient);
     }
 
     /**
@@ -350,7 +353,6 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
 
 
     }
-
 
 
     public static void main(String args[]) {

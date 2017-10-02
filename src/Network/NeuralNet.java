@@ -1,6 +1,9 @@
 package Network;
 
 import Jama.Matrix;
+import Network.Trainer.UpdateRule;
+
+import java.util.ArrayList;
 
 /**
  * Created by fabd on 28/09/17.
@@ -13,9 +16,11 @@ public interface NeuralNet {
 
     double[][] getEstimates(Matrix input);
 
-    void update(); //TODO: Should pass in a lambda to this.
+    void applyUpdateRule(UpdateRule rule); //TODO: Should pass in a lambda to this.
 
     double computeCost(Matrix estimates);
 
     Matrix computeEstimates(Matrix in);
+
+    ArrayList getWeights();
 }

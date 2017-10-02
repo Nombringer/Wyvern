@@ -1,4 +1,4 @@
-package Trainer;
+package Network.Trainer;
 
 import Jama.Matrix;
 import Network.NeuralNet;

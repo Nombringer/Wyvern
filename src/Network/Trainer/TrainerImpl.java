@@ -1,4 +1,4 @@
-package Trainer;
+package Network.Trainer;
 
 
 import Jama.Matrix;
@@ -10,13 +10,13 @@ import static Ultil.MatrixUtils.normaliseMatrix;
  * Created by fabd on 28/09/17.
  */
 public abstract class TrainerImpl implements Trainer {
-    private NeuralNet trainingNet;
+    protected NeuralNet trainingNet;
 
-    private Matrix trainingIn;
-    private Matrix trainingOut;
+    protected Matrix trainingIn;
+    protected Matrix trainingOut;
 
-    private Matrix normalisedIn;
-    private Matrix normalisedOut;
+    protected Matrix normalisedIn;
+    protected Matrix normalisedOut;
 
     TrainerImpl(NeuralNet net, Matrix tIn, Matrix tOut) {
         this.trainingIn = tIn;
