@@ -19,7 +19,7 @@ public abstract class GradientDescentTrainer extends TrainerImpl {
         while(!terminationCondition()){
             Matrix estimates = net.computeEstimates(trainingInputs);
             net.backProp(estimates);
-            update();`
+            update();
         }
     }
 

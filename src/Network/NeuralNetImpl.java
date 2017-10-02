@@ -5,7 +5,6 @@ import Network.ActivationFunction.ActivationFunction;
 import Network.ActivationFunction.HyperbolicTangent;
 import Network.Layer.BiasLayer;
 import Network.Layer.WeightLayer;
-import Trainer.Trainer;
 
 import java.util.ArrayList;
 import static Ultil.MatrixUtils.normaliseMatrix;
@@ -279,6 +278,10 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
     ////////////////////////////////////
 
 
+    public ArrayList<Matrix> getWeights(){
+        return weights;
+
+    }
 
     @SuppressWarnings("unused")
     public void printNormalisedData(){
