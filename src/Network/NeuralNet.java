@@ -22,5 +22,7 @@ public interface NeuralNet {
 
     Matrix computeEstimates(Matrix in);
 
-    ArrayList getWeights();
+    double getCost();
+
+    void printCurrentCost();
 }

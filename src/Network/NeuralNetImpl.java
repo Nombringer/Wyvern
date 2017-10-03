@@ -46,14 +46,7 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
 
 
     //Example training set from WelchLabs
-    private final boolean testMode = true;
-    private final double[][] trainingIn =  {{3, 5}, {5, 1}, {10, 2}};
-    private final double[]   trainingOut = {75, 82, 93};
-
-    //Arbitrary thresholds because nothing better has been implemented yet
-    private final int maxIterations = 100000;
-    private final double costThreshold = 0.0000001;
-    private final double learningRate = 0.1;
+    private final boolean testMode = false;
 
 
 
@@ -88,6 +81,9 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
 
     public NeuralNetImpl(Matrix in, Matrix out, ArrayList<Integer> hiddenLayerSizes){
         setInputData(in);
+        for (Integer i: hiddenLayerSizes){
+            layerSizes.add(i);
+        }
         setOutData(out);
         generateWeightLayers();
         generateBiasLayers(inputData);
@@ -167,42 +163,11 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
         return estimates.copy();
     }
 
+
     /////////////////////
     //////TRAINING///////
     /////////////////////
 
-
-    /**
-     * Trains the network, using the specified:
-     * Update Rule
-     * Termination Rule
-     * Activation Function
-     */
-    /*
-    private void train(){
-        int iterations = 0;
-        backProp(estimates);
-        System.out.println("Beginning Optimisation (Modified Least Squares)\n Showing every 1000th iteration:\n");
-        while (checkEstimates()&&iterations<maxIterations){
-            forwardProp(inputData);
-            backProp(estimates);
-            //if(iterations%10000 ==0){ printWeightCostGradient(0);}
-            applyUpdateRule();
-            iterations++;
-        }
-
-    }
-
-    /**
-     * @return true while the cost of the estimates is greater than the threshold value
-     */
-    public boolean checkEstimates(){
-        if(computeCost(estimates)<costThreshold){
-            System.out.println("Optimisation finished, cost in required threshold");
-            return false;
-        }
-        return true;
-    }
 
 
     /**
@@ -221,8 +186,8 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
      * @return the total mean squares error
      */
     public double computeCost(Matrix estimates){
-        Matrix objectiveFunction = targetData.minus(estimates);
-        objectiveFunction = objectiveFunction.arrayTimesEquals(targetData.minus(estimates));
+        Matrix objectiveFunction = targetData.copy().minus(estimates.copy());
+        objectiveFunction = objectiveFunction.arrayTimesEquals(targetData.copy().minus(estimates.copy()));
         return sum(objectiveFunction)/objectiveFunction.getColumnDimension();
     }
 
@@ -264,13 +229,13 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
     ///////////////////////////
 
     public void setInputData(Matrix trainingIn){
-        inputData = normaliseMatrix(trainingIn);
-        layerSizes.set(0, trainingIn.getColumnDimension());
+        inputData = trainingIn;
+        layerSizes.add(trainingIn.getColumnDimension());
     }
 
     public void setOutData(Matrix trainingOut) {
-        targetData = normaliseMatrix(trainingOut);
-        layerSizes.set(layerSizes.size() -1, trainingOut.getColumnDimension());
+        targetData = trainingOut;
+        layerSizes.add(trainingOut.getColumnDimension());
     }
 
 
@@ -302,6 +267,11 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
     public void printCurrentCost(){
         System.out.println("Cost of current estimates :");
         System.out.println(computeCost(estimates));
+    }
+
+    @Override
+    public double getCost() {
+        return computeCost(estimates);
     }
 
     @SuppressWarnings("unused")
@@ -355,9 +325,9 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
     }
 
 
-    public static void main(String args[]) {
-        @SuppressWarnings("unused") NeuralNetImpl wyvren = new NeuralNetImpl();
-    }
+   // public static void main(String args[]) {
+   //     @SuppressWarnings("unused") NeuralNetImpl wyvren = new NeuralNetImpl();
+    //}
 
 
 }

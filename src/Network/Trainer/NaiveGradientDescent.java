@@ -11,18 +11,36 @@ import java.util.ArrayList;
 public class NaiveGradientDescent extends GradientDescentTrainer {
 
     private int iterations;
-    private int iterationThreshold;
-    private int gradientTheshhold;
-
     private double learningRate = 0.1;
     private double costThreshold = 0.0000001;
-    private final int maxIterations = 100000;
+    private int iterationThreshhold = 100000;
 
 
-
-    NaiveGradientDescent(NeuralNet net, Matrix tIn, Matrix tOut) {
+    /**
+     *
+     * @param net The NN to be trained
+     * @param tIn The inputs of the training set
+     * @param tOut The outputs of the Training Set
+     */
+    public NaiveGradientDescent(NeuralNet net, Matrix tIn, Matrix tOut) {
         super(net, tIn, tOut);
+        iterations = 0;
     }
+
+
+
+    @Override
+    protected boolean terminationCondition() {
+        if (iterations==0){return false;} //TODO: Ugly as hell avoiding of null pointers
+        if (iterations%1000 == 1){System.out.println(iterations); trainingNet.printCurrentCost();}
+        if(iterations>=iterationThreshhold||trainingNet.getCost()<costThreshold){
+            iterations = 0;
+            System.out.println("Training Completed");
+            return true;
+        }
+        return false;
+    }
+
 
     UpdateRule updateRule = (ArrayList<Matrix> weights, ArrayList<Matrix> gradient) -> {
         for (int i = 0; i < weights.size(); i++) {
@@ -32,36 +50,16 @@ public class NaiveGradientDescent extends GradientDescentTrainer {
 
 
     @Override
-    protected boolean terminationCondition() {
-        if(iterations>=iterationThreshold){
-            return true;
-        }
-        return false;
-    }
-
-
-    //   for(int j = 0; j<weights.size();j++){
-           // weights.get(j).minusEquals(weightCostGradient.get(j).times(learningRate));
-    @Override
     protected void update() {
-        trainingNet.applyUpdateRule();
+            trainingNet.applyUpdateRule(updateRule);
+            iterations++;
     }
 
-
-    public int getIterationThreshold() {
-        return iterationThreshold;
-    }
+    public int getIterationThreshold() {return iterationThreshhold; }
 
     public void setIterationThreshold(int iterationThreshold) {
-        this.iterationThreshold = iterationThreshold;
+        this.iterationThreshhold = iterationThreshold;
     }
 
-    public int getGradientTheshhold() {
-        return gradientTheshhold;
-    }
-
-    public void setGradientTheshhold(int gradientTheshhold) {
-        this.gradientTheshhold = gradientTheshhold;
-    }
 
 }

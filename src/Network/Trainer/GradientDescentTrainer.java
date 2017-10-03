@@ -14,11 +14,11 @@ public abstract class GradientDescentTrainer extends TrainerImpl {
     }
 
     @Override
-    public void Train(NeuralNet net, Matrix trainingInputs, Matrix trainingOutputs) {
+    public void train() {
 
         while(!terminationCondition()){
-            Matrix estimates = net.computeEstimates(trainingInputs);
-            net.backProp(estimates);
+            Matrix estimates = trainingNet.computeEstimates(trainingIn);
+            trainingNet.backProp(estimates);
             update();
         }
     }

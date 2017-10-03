@@ -15,8 +15,6 @@ public abstract class TrainerImpl implements Trainer {
     protected Matrix trainingIn;
     protected Matrix trainingOut;
 
-    protected Matrix normalisedIn;
-    protected Matrix normalisedOut;
 
     TrainerImpl(NeuralNet net, Matrix tIn, Matrix tOut) {
         this.trainingIn = tIn;
@@ -24,10 +22,7 @@ public abstract class TrainerImpl implements Trainer {
         trainingNet = net;
     }
 
-    public abstract void Train(NeuralNet net, Matrix trainingInputs, Matrix trainingOutputs);
+    public abstract void train();
 
-    private void NormaliseTrainingMatrices(){
-        normalisedIn = normaliseMatrix(trainingIn);
-        normalisedOut = normaliseMatrix(trainingOut);
-    }
+
 }

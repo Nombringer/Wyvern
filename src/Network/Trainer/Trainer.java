@@ -8,7 +8,5 @@ import Network.NeuralNet;
  */
 public interface Trainer {
 
-    void Train(NeuralNet net, Matrix trainingInputs, Matrix trainingOutputs);
-
-
+    void train();
 }

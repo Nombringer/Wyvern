@@ -1,7 +1,5 @@
 package Network.Trainer;
-
 import Jama.Matrix;
-
 import java.util.ArrayList;
 
 /**
