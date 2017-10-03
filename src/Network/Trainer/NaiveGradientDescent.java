@@ -15,7 +15,6 @@ public class NaiveGradientDescent extends GradientDescentTrainer {
     private double costThreshold = 0.0000001;
     private int iterationThreshhold = 100000;
 
-
     /**
      *
      * @param net The NN to be trained
@@ -27,12 +26,11 @@ public class NaiveGradientDescent extends GradientDescentTrainer {
         iterations = 0;
     }
 
-
-
     @Override
     protected boolean terminationCondition() {
         if (iterations==0){return false;} //TODO: Ugly as hell avoiding of null pointers
-        if (iterations%1000 == 1){System.out.println(iterations); trainingNet.printCurrentCost();}
+        if (iterations%100 == 1){System.out.println(iterations); trainingNet.printCurrentCost();}
+
         if(iterations>=iterationThreshhold||trainingNet.getCost()<costThreshold){
             iterations = 0;
             System.out.println("Training Completed");
@@ -41,13 +39,11 @@ public class NaiveGradientDescent extends GradientDescentTrainer {
         return false;
     }
 
-
     UpdateRule updateRule = (ArrayList<Matrix> weights, ArrayList<Matrix> gradient) -> {
         for (int i = 0; i < weights.size(); i++) {
             weights.get(i).minusEquals(gradient.get(i).times(learningRate));
         }
     };
-
 
     @Override
     protected void update() {
@@ -56,10 +52,7 @@ public class NaiveGradientDescent extends GradientDescentTrainer {
     }
 
     public int getIterationThreshold() {return iterationThreshhold; }
-
     public void setIterationThreshold(int iterationThreshold) {
         this.iterationThreshhold = iterationThreshold;
     }
-
-
 }

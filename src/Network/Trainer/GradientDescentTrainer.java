@@ -8,22 +8,22 @@ import Network.NeuralNet;
  */
 public abstract class GradientDescentTrainer extends TrainerImpl {
 
+    protected abstract boolean terminationCondition();
+    protected abstract void update();
+
 
     GradientDescentTrainer(NeuralNet net, Matrix tIn, Matrix tOut) {
         super(net, tIn, tOut);
     }
-
     @Override
     public void train() {
+        Matrix estimates;
 
         while(!terminationCondition()){
-            Matrix estimates = trainingNet.computeEstimates(trainingIn);
+            estimates = trainingNet.computeEstimates(trainingIn);
             trainingNet.backProp(estimates);
             update();
         }
     }
-
-    protected abstract boolean terminationCondition();
-    protected abstract void update();
 
 }

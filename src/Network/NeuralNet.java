@@ -14,13 +14,13 @@ public interface NeuralNet {
 
     void backProp(Matrix estimates);
 
+    void applyUpdateRule(UpdateRule rule);
+
     double[][] getEstimates(Matrix input);
 
-    void applyUpdateRule(UpdateRule rule); //TODO: Should pass in a lambda to this.
+    Matrix computeEstimates(Matrix in);
 
     double computeCost(Matrix estimates);
-
-    Matrix computeEstimates(Matrix in);
 
     double getCost();
 

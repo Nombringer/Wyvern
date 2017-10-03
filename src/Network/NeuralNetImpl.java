@@ -8,7 +8,6 @@ import Network.Layer.WeightLayer;
 import Network.Trainer.UpdateRule;
 
 import java.util.ArrayList;
-import static Ultil.MatrixUtils.normaliseMatrix;
 import static Ultil.MatrixUtils.sum;
 
 /**
@@ -18,7 +17,6 @@ import static Ultil.MatrixUtils.sum;
 
 
 
-@SuppressWarnings({"FieldCanBeLocal", "WeakerAccess", "JavaDoc"})
 public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
 
 
@@ -33,51 +31,10 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
     private ArrayList<Matrix> weightCostGradient = new ArrayList<>();
     private ArrayList<BiasLayer> biasLayers = new ArrayList<>();
 
-
-
-    //TODO: This stuff might not make so much now that sizes are modular and stored elsewhere, refactor.
-    @Deprecated
-    private int inputLayerSize;
-    @Deprecated
-    private int outputLayerSize;
     private Matrix inputData;
     private Matrix targetData;
     private Matrix estimates;
 
-
-    //Example training set from WelchLabs
-    private final boolean testMode = false;
-
-
-
-    public NeuralNetImpl(){
-
-        //////////////////////
-        /////TESTING CRAP/////
-        //////////////////////
-
-
-        if(testMode){
-            //Generates and trains the network on the WelchLabs training set.
-            //generateTrainingMatrices();
-            inputLayerSize = inputData.getColumnDimension();
-            outputLayerSize = targetData.getColumnDimension();
-            layerSizes.add(inputLayerSize); layerSizes.add(10); layerSizes.add(outputLayerSize);
-
-            generateWeightLayers();
-            generateBiasLayers(inputData);
-            forwardProp(inputData);
-            //train();
-            System.out.println("Estimated values"); estimates.print(1,5);
-            System.out.println("Training values"); targetData.print(1, 5);
-
-            System.out.println("Testing input [3][5]");
-            double[] testIn = {3, 5}; Matrix input = new Matrix(testIn ,1);
-            System.out.println(getEstimates(input));
-
-        }
-
-    }
 
     public NeuralNetImpl(Matrix in, Matrix out, ArrayList<Integer> hiddenLayerSizes){
         setInputData(in);
@@ -89,15 +46,12 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
         generateBiasLayers(inputData);
     }
 
-
-
-
     ////////////////////////////////////
     /////FORWARD AND BACK PROPAGATION///
     ////////////////////////////////////
 
     /**
-     * Propgates an input through the matrix
+     * Propagates an input through the matrix
      * @param input
      */
     public void forwardProp(Matrix input){
@@ -174,10 +128,6 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
      * Updates every weight in the net based on the current applyUpdateRule rule
      */
     public void applyUpdateRule(UpdateRule rule ){
-        //TODO: Refactor into an "Update Rule" possibly in a trainer package.
-       // for(int j = 0; j<weights.size();j++){
-       //     weights.get(j).minusEquals(weightCostGradient.get(j).times(learningRate));
-       // }
         rule.update(weights, weightCostGradient);
     }
 
@@ -200,7 +150,7 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
      * Generate the weights based on the the HyperParameters
      * Also populates a list which corresponds to the derivatives of each layer with respect to the cost.
      */
-    public void generateWeightLayers(){
+    private void generateWeightLayers(){
        for(int i = 0; i<layerSizes.size() -1; i++){
            WeightLayer weightLayer = new WeightLayer(layerSizes.get(i), layerSizes.get(i+1), BiasLayerFunction, layerSizes.get(i)*layerSizes.get(i+1));
            weights.add(weightLayer);
@@ -215,55 +165,28 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
      * Generates the underlying matrices for the bias layers.
      * Dimensions are based on the dimensions of the input matrix, ie # of training examples
      */
-    public void generateBiasLayers(Matrix input){
-        //TODO: Currently the layers are regenerated on input, meaning we can edit individual activation functions, maybe add some kind of thing that lets you scale the size
+    private void generateBiasLayers(Matrix input){
         biasLayers = new ArrayList<>();
         for (int i = 1; i <(layerSizes.size()); i++) {
             biasLayers.add(new BiasLayer(input.getRowDimension(), layerSizes.get(i) , BiasLayerFunction));
         }
     }
 
-
     ///////////////////////////
     //////HELPER FUNCTIONS/////
     ///////////////////////////
 
-    public void setInputData(Matrix trainingIn){
+    private void setInputData(Matrix trainingIn){
         inputData = trainingIn;
         layerSizes.add(trainingIn.getColumnDimension());
     }
 
-    public void setOutData(Matrix trainingOut) {
+    private void setOutData(Matrix trainingOut) {
         targetData = trainingOut;
         layerSizes.add(trainingOut.getColumnDimension());
     }
 
-
-
-
-    ////////////////////////////////////
-    ////////Getters/Setters/Printers////
-    ////////////////////////////////////
-
-
-    public ArrayList<Matrix> getWeights(){
-        return weights;
-
-    }
-
-    @SuppressWarnings("unused")
-    public void printNormalisedData(){
-        System.out.println("Normalised Data: ");
-        inputData.print(1, 3);
-        targetData.print(1, 3);
-    }
-
-    @SuppressWarnings("unused")
-    public void printTrainingOutputs() {
-        System.out.println("Training outputs:  ");
-        targetData.print(1, 3);
-    }
-
+    @Override
     public void printCurrentCost(){
         System.out.println("Cost of current estimates :");
         System.out.println(computeCost(estimates));
@@ -273,61 +196,4 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
     public double getCost() {
         return computeCost(estimates);
     }
-
-    @SuppressWarnings("unused")
-    public void printWeightCostGradient(int layer) {
-        if(layer==0){
-            System.out.println("Cost Gradient of current weight biasLayers");
-            for(Matrix m : weightCostGradient){
-                m.print(1,6);}
-        }else{
-            System.out.println("Current cost gradient of weights at layer " + layer);
-            weightCostGradient.get(layer).print(1, 3);}
-
-    }
-
-    public void printWeights(@SuppressWarnings("SameParameterValue") int layer) {
-     if(layer==0){
-         System.out.println("Current weights");
-         for(Matrix m : weights){
-                m.print(1,3);}
-        }else{
-         System.out.println("Current weights at layer " + layer);
-         weights.get(layer).print(1, 3);}
-
-    }
-
-
-
-
-    ///////////////////////////
-    /////////Tests/////////////
-    ///////////////////////////
-
-    //TODO: Make some. This is mildly embarrassing.
-    //TODO: Benchmarking.
-
-    @SuppressWarnings("unused")
-    private void testSygmoid(){
-        System.out.println("Testing sygmoid: ");
-        System.out.println("Network.ActivationFunctionImpl.LogisticFunctionImpl(1) = " + BiasLayerFunction.apply(1) );
-        System.out.println("Network.ActivationFunctionImpl.LogisticFunctionImpl(-1, 0 1) = ");
-        Matrix out = BiasLayerFunction.apply(new Matrix( new double[] {-1, 0, 1}, 1 ));
-        out.print(1, 2);
-
-        System.out.println("Testing sygmoidPrime: ");
-        System.out.println("Sygmoidprime(1) = " + BiasLayerFunction.applyGradFunc(1) );
-        System.out.println("Network.ActivationFunctionImpl.LogisticFunctionImpl(-1, 0 1) = ");
-        Matrix out2 = BiasLayerFunction.applyGradFunc(new Matrix( new double[] {-1, 0, 1}, 1 ));
-        out2.print(1, 2);
-
-
-    }
-
-
-   // public static void main(String args[]) {
-   //     @SuppressWarnings("unused") NeuralNetImpl wyvren = new NeuralNetImpl();
-    //}
-
-
 }
