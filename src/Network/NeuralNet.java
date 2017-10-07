@@ -1,9 +1,6 @@
 package Network;
-
 import Jama.Matrix;
 import Network.Trainer.UpdateRule;
-
-import java.util.ArrayList;
 
 /**
  * Created by fabd on 28/09/17.

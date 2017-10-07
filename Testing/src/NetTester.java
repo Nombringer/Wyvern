@@ -1,6 +1,6 @@
 import Jama.Matrix;
 import Network.NeuralNet;
-import Network.NeuralNetImpl;
+import Network.MultilayerPerceptron;
 import Network.Trainer.NaiveGradientDescent;
 import Network.Trainer.Trainer;
 
@@ -21,9 +21,9 @@ public class NetTester {
         Matrix tIn = normaliseMatrix(new Matrix(trainingIn));
         Matrix tOut = normaliseMatrix(new Matrix(trainingOut, 3));
         ArrayList<Integer> hiddenLayerSizes = new ArrayList<>();
-        hiddenLayerSizes.add(10);
+        hiddenLayerSizes.add(10);hiddenLayerSizes.add(3);
 
-        NeuralNet net = new NeuralNetImpl(tIn, tOut, hiddenLayerSizes);
+        NeuralNet net = new MultilayerPerceptron(tIn, tOut, hiddenLayerSizes);
         Trainer trainer = new NaiveGradientDescent(net, tIn, tOut);
         trainer.train();
     }

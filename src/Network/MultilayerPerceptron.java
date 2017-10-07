@@ -17,7 +17,7 @@ import static Ultil.MatrixUtils.sum;
 
 
 
-public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
+public class MultilayerPerceptron implements NeuralNet { //TODO: Make abstract
 
 
     //Stores the sizes of each layer. including input and output. Matrices are generated based off this.
@@ -36,7 +36,7 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
     private Matrix estimates;
 
 
-    public NeuralNetImpl(Matrix in, Matrix out, ArrayList<Integer> hiddenLayerSizes){
+    public MultilayerPerceptron(Matrix in, Matrix out, ArrayList<Integer> hiddenLayerSizes){
         setInputData(in);
         for (Integer i: hiddenLayerSizes){
             layerSizes.add(i);
@@ -99,7 +99,6 @@ public class NeuralNetImpl implements NeuralNet { //TODO: Make abstract
      * @param in, input matrix, needs match input size of training set
      * @return double array of the estimates
      */
-
     public double[][] getEstimates(Matrix in){
         generateBiasLayers(in);
         forwardProp(in);
