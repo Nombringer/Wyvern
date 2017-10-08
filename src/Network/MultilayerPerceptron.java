@@ -29,6 +29,7 @@ public class MultilayerPerceptron implements NeuralNet { //TODO: Make abstract
     //Storage for Bias and Weight classes
     private ArrayList<Matrix> weights = new ArrayList<>();
     private ArrayList<Matrix> weightCostGradient = new ArrayList<>();
+    //This includes input and output layers
     private ArrayList<BiasLayer> biasLayers = new ArrayList<>();
 
     private Matrix inputData;
@@ -69,9 +70,10 @@ public class MultilayerPerceptron implements NeuralNet { //TODO: Make abstract
         estimates = biasLayers.get(biasLayers.size()-1);
     }
 
-    public void backProp(Matrix estimated){
+    public void backProp(Matrix estimated, Matrix targets){
         Matrix dJdW;
         forwardProp(inputData);
+        targetData = targets;
 
         //Compute the gradient of the last layer.
         Matrix m = targetData.minus(estimated).times(-1);

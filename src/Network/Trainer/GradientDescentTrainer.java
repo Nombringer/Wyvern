@@ -21,7 +21,7 @@ public abstract class GradientDescentTrainer extends TrainerImpl {
 
         while(!terminationCondition()){
             estimates = trainingNet.computeEstimates(trainingIn);
-            trainingNet.backProp(estimates);
+            trainingNet.backProp(estimates, trainingOut);
             update();
         }
     }

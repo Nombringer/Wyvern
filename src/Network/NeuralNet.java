@@ -9,7 +9,7 @@ public interface NeuralNet {
 
     void forwardProp(Matrix input);
 
-    void backProp(Matrix estimates);
+    void backProp(Matrix estimates, Matrix targetData);
 
     void applyUpdateRule(UpdateRule rule);
 
