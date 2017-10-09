@@ -26,7 +26,7 @@ public class NetTester {
         Matrix tIn = normaliseMatrix(new Matrix(trainingIn));
         Matrix tOut = normaliseMatrix(new Matrix(trainingOut, 3));
         ArrayList<Integer> hiddenLayerSizes = new ArrayList<>();
-        hiddenLayerSizes.add(10);hiddenLayerSizes.add(3);
+        hiddenLayerSizes.add(10);
 
         NeuralNet net = new MultilayerPerceptron(tIn, tOut, hiddenLayerSizes);
         Trainer trainer = new NaiveGradientDescent(net, tIn, tOut);
