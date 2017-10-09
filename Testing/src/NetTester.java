@@ -5,6 +5,7 @@ import Network.Trainer.NaiveGradientDescent;
 import Network.Trainer.Trainer;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static Ultil.MatrixUtils.normaliseMatrix;
 
@@ -18,6 +19,10 @@ public class NetTester {
 
 
     void basicRun(){
+
+        Random random = new Random();
+
+
         Matrix tIn = normaliseMatrix(new Matrix(trainingIn));
         Matrix tOut = normaliseMatrix(new Matrix(trainingOut, 3));
         ArrayList<Integer> hiddenLayerSizes = new ArrayList<>();

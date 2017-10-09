@@ -56,5 +56,29 @@ public class MatrixUtils {
         return sum;
     }
 
+    /**
+     * Gets the specified row of a matrix.
+     *
+     * @param m   the matrix.
+     * @param row the row to get.
+     * @return the specified row of m.
+     */
+    public static Matrix getrow(Matrix m, int row) {
+        return m.getMatrix(row, row, 0, m.getColumnDimension() - 1);
+    }
+
+    /**
+     * Gets the specified column of a matrix.
+     *
+     * @param m   the matrix.
+     * @param col the column to get.
+     * @return the specified column of m.
+     */
+    public static Matrix getcol(Matrix m, int col) {
+        return m.getMatrix(0, m.getRowDimension() - 1, col, col);
+    }
+
+
+
 
 }

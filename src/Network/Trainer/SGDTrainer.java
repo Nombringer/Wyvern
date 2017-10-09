@@ -12,7 +12,8 @@ import Network.NeuralNet;
  */
 public class SGDTrainer extends GradientDescentTrainer {
 
-    private int epochs; //TODO: Something better
+    private int epochlimit; //TODO: Something better
+    private int miniBatchSize;
     int pos;
 
 
