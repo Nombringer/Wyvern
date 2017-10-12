@@ -7,6 +7,30 @@ import Jama.Matrix;
  */
 public class MatrixUtils {
 
+
+    /**
+     * Deletes a row from a matrix.  Does not change the passed matrix.
+     *
+     * @param m   the matrix.
+     * @param row the row to delete.
+     * @return m with the specified row deleted.
+     */
+    public static Matrix deleteRow(Matrix m, int row) {
+        int numRows = m.getRowDimension();
+        int numCols = m.getColumnDimension();
+        Matrix m2 = new Matrix(numRows - 1, numCols);
+        for (int mi = 0, m2i = 0; mi < numRows; mi++) {
+            if (mi == row)
+                continue;  // skips incrementing m2i
+            for (int j = 0; j < numCols; j++) {
+                m2.set(m2i, j, m.get(mi, j));
+            }
+            m2i++;
+        }
+        return m2;
+    }
+
+
     /**
      * Appends additional rows to the first matrix.
      *
