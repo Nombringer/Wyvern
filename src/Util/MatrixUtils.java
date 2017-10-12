@@ -1,4 +1,4 @@
-package Ultil;
+package Util;
 
 import Jama.Matrix;
 

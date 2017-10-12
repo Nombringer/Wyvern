@@ -6,8 +6,8 @@ import Network.NeuralNet;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static Ultil.MatrixUtils.getrow;
-import static Ultil.MatrixUtils.setrow;
+import static Util.MatrixUtils.getrow;
+import static Util.MatrixUtils.setrow;
 
 
 /**

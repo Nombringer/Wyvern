@@ -8,7 +8,7 @@ import Network.Layer.WeightLayer;
 import Network.Trainer.UpdateRule;
 
 import java.util.ArrayList;
-import static Ultil.MatrixUtils.sum;
+import static Util.MatrixUtils.sum;
 
 /**
  * Base Neural Net class for project Wyvern.

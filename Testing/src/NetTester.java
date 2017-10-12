@@ -7,7 +7,7 @@ import Network.Trainer.Trainer;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static Ultil.MatrixUtils.normaliseMatrix;
+import static Util.MatrixUtils.normaliseMatrix;
 
 /**
  * Created by fabd on 3/10/17.
