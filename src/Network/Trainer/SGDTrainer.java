@@ -26,7 +26,7 @@ public class SGDTrainer extends GradientDescentTrainer {
     Matrix fullIn;
     Matrix fullOut;
 
-    SGDTrainer(NeuralNet net, Matrix tIn, Matrix tOut) {
+    public SGDTrainer(NeuralNet net, Matrix tIn, Matrix tOut) {
         super(net, tIn, tOut);
         fullIn = trainingIn;
         fullOut = trainingOut;

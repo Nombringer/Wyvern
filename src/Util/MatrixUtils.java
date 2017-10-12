@@ -3,8 +3,13 @@ package Util;
 import Jama.Matrix;
 
 /**
- * Created by fabd on 28/09/17.
+ * Most of the stuff is just simple utility Functions taken from:
+ *
+ * https://github.com/ppolabs/jlinda/blob/master/jlinda-core/src/main/java/org/jlinda/core/coregistration/estimation/utils/JamaUtils.java
+ *
  */
+
+
 public class MatrixUtils {
 
 
