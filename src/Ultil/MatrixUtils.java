@@ -8,6 +8,53 @@ import Jama.Matrix;
 public class MatrixUtils {
 
     /**
+     * Appends additional rows to the first matrix.
+     *
+     * @param m the first matrix.
+     * @param n the matrix to append containing additional rows.
+     * @return a matrix with all the rows of m then all the rows of n.
+     */
+    public static Matrix rowAppend(Matrix m, Matrix n) {
+        int mNumRows = m.getRowDimension();
+        int mNumCols = m.getColumnDimension();
+        int nNumRows = n.getRowDimension();
+        int nNumCols = n.getColumnDimension();
+
+        if (mNumCols != nNumCols)
+            throw new IllegalArgumentException("Number of columns must be identical to row-append.");
+
+        Matrix x = new Matrix(mNumRows + nNumRows, mNumCols);
+        x.setMatrix(0, mNumRows - 1, 0, mNumCols - 1, m);
+        x.setMatrix(mNumRows, mNumRows + nNumRows - 1, 0, mNumCols - 1, n);
+
+        return x;
+    }
+
+    /**
+     * Appends additional columns to the first matrix.
+     *
+     * @param m the first matrix.
+     * @param n the matrix to append containing additional columns.
+     * @return a matrix with all the columns of m then all the columns of n.
+     */
+    public static Matrix columnAppend(Matrix m, Matrix n) {
+        int mNumRows = m.getRowDimension();
+        int mNumCols = m.getColumnDimension();
+        int nNumRows = n.getRowDimension();
+        int nNumCols = n.getColumnDimension();
+
+        if (mNumRows != nNumRows)
+            throw new IllegalArgumentException("Number of rows must be identical to column-append.");
+
+        Matrix x = new Matrix(mNumRows, mNumCols + nNumCols);
+        x.setMatrix(0, mNumRows - 1, 0, mNumCols - 1, m);
+        x.setMatrix(0, mNumRows - 1, mNumCols, mNumCols + nNumCols - 1, n);
+
+        return x;
+    }
+
+
+    /**
      * @param matrix
      * @return The matrix, with the data normalised to 1 based on the maximum value
      */
