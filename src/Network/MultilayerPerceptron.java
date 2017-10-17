@@ -57,6 +57,8 @@ public class MultilayerPerceptron implements NeuralNet { //TODO: Make abstract
      */
     public void forwardProp(Matrix input){
         //TODO: Start adding size exceptions
+        inputData = input;
+        generateBiasLayers(input);
 
         Matrix previous = input;
         int i = 0;

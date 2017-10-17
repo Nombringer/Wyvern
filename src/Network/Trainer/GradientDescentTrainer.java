@@ -24,6 +24,8 @@ public abstract class GradientDescentTrainer extends TrainerImpl {
             trainingNet.backProp(estimates, trainingOut);
             update();
         }
+
+
     }
 
 }

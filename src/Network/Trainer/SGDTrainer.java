@@ -15,10 +15,10 @@ import static Util.MatrixUtils.setrow;
  */
 public class SGDTrainer extends GradientDescentTrainer {
 
-    private double learningRate = 0.1; //TODO: Set properly
+    private double learningRate = 0.01; //TODO: Set properly
 
     private int epochs;
-    private int epochLimit; //TODO: Something better
+    private int epochLimit = 100000; //TODO: Something better
     private int miniBatchSize;
     private double costThreshold = 0.0000001;
 
@@ -26,25 +26,28 @@ public class SGDTrainer extends GradientDescentTrainer {
     Matrix fullIn;
     Matrix fullOut;
 
-    public SGDTrainer(NeuralNet net, Matrix tIn, Matrix tOut) {
+    public SGDTrainer(NeuralNet net, Matrix tIn, Matrix tOut, int batchSize) {
         super(net, tIn, tOut);
         fullIn = trainingIn;
         fullOut = trainingOut;
+        miniBatchSize = batchSize;
         setMiniBatch();
     }
 
     @Override
     public void train() {
-        super.train();
+        epochs = 0;
         setMiniBatch();
+        super.train();
+
     }
 
     private void setMiniBatch(){
-        Matrix miniBatchIn = new Matrix(fullIn.getColumnDimension(), miniBatchSize);
-        Matrix miniBatchOut = new Matrix(fullOut.getColumnDimension(), miniBatchSize);
+        Matrix miniBatchIn = new Matrix(miniBatchSize, fullIn.getColumnDimension());
+        Matrix miniBatchOut = new Matrix(miniBatchSize, fullOut.getColumnDimension());
 
-        for (int i = 0; i < miniBatchSize; i++){
-            int random = ThreadLocalRandom.current().nextInt(0, fullIn.getRowDimension() + 1);
+        for (int i = 0; i < miniBatchSize -1; i++){
+            int random = ThreadLocalRandom.current().nextInt(0, fullIn.getRowDimension());
             setrow(miniBatchIn, i , getrow(fullIn, random));
             setrow(miniBatchOut, i, getrow(fullOut, random));
         }
@@ -54,6 +57,9 @@ public class SGDTrainer extends GradientDescentTrainer {
 
     @Override
     protected boolean terminationCondition() {
+        if (epochs%100 == 1){System.out.println(epochs); trainingNet.printCurrentCost();}
+
+        if (epochs==0){return false;}
         if (epochs>=epochLimit||trainingNet.getCost()<costThreshold){return true;}
         return false;
     }
