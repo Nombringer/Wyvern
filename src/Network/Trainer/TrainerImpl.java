@@ -18,4 +18,10 @@ public abstract class TrainerImpl implements Trainer {
         trainingNet = net;
     }
     public abstract void train();
+
+    @Override
+    public void setTrainingMatrices(Matrix trainingIn, Matrix trainingOut) {
+        this.trainingIn = trainingIn;
+        this.trainingOut = trainingOut;
+    }
 }
