@@ -12,6 +12,10 @@ import Jama.Matrix;
 
 public class MatrixUtils {
 
+    public Matrix toMatrix(double[][] tensor){
+        Matrix m = new Matrix(tensor);
+        return m;
+    }
 
     /**
      * Deletes a row from a matrix.  Does not change the passed matrix.
