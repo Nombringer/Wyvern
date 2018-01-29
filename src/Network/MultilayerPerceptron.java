@@ -134,6 +134,7 @@ public class MultilayerPerceptron implements NeuralNet { //TODO: Make abstract
         rule.update(weights, weightCostGradient);
     }
 
+
     /**
      * @param estimates; The cost associated with every training example
      * @return the total mean squares error

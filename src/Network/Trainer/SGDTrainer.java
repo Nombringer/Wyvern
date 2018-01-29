@@ -18,7 +18,7 @@ public class SGDTrainer extends GradientDescentTrainer {
     private double learningRate = 0.01; //TODO: Set properly
 
     private int epochs;
-    private int epochLimit = 100000; //TODO: Something better
+    private int epochLimit = 10000; //TODO: Something better
     private int miniBatchSize;
     private double costThreshold = 0.0000001;
 
@@ -57,7 +57,7 @@ public class SGDTrainer extends GradientDescentTrainer {
 
     @Override
     protected boolean terminationCondition() {
-        if (epochs%100 == 1){System.out.println(epochs); trainingNet.printCurrentCost();}
+        if (epochs%100 == 1){System.out.println(epochs); trainingNet.computeCost(trainingNet.computeEstimates(trainingIn));}
 
         if (epochs==0){return false;}
         if (epochs>=epochLimit||trainingNet.getCost()<costThreshold){return true;}
